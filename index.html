@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APORO - Partner</title>
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js for Graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Base styles from user app for consistency */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #000;
+            border-radius: 30px;
+            padding: 8px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            width: 100%;
+            height: 100%;
+            background: #f4f7fc;
+            border-radius: 22px;
+            overflow: hidden;
+            position: relative;
+            display: none;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .status-bar {
+            height: 44px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            flex-shrink: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .header.sub-header {
+             background: #fff;
+             color: #333;
+             text-align: left;
+             border-bottom: 1px solid #e9ecef;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sub-header .back-btn {
+            background: #f4f7fc;
+            color: #333;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-green {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .btn-red {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #333;
+            border: 1px solid #e9ecef;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e9ecef;
+            background: #fff;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .navigation {
+            background: #ffffff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: flex;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+            margin: 15px;
+            justify-content: space-around;
+            flex-shrink: 0;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 12px;
+            color: #888;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 60px;
+        }
+        
+        .nav-btn i {
+            font-size: 20px;
+        }
+
+        .nav-btn.active {
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+
+        /* Partner Specific Styles */
+        .map-view {
+            height: 250px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            background-image: url('https://i.ibb.co/VJCqWnC/map-background-light.png');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .map-view.live-trip {
+            height: 60%;
+            border-radius: 0;
+            margin-bottom: 0;
+        }
+        
+        .map-view svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .route-path {
+            fill: none;
+            stroke: #4a90e2;
+            stroke-width: 6;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 10, 10;
+            animation: dash 1s linear infinite;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -20;
+            }
+        }
+
+        .map-icon {
+            position: absolute;
+            color: white;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            border: 2px solid white;
+        }
+
+        .car-icon {
+            background-color: #667eea;
+            font-size: 18px;
+            offset-path: path("M30,190 C50,120 160,120 210,190 S 310,260 350,190"); /* The SVG path for animation */
+            animation: drive 8s linear infinite;
+            z-index: 3;
+        }
+
+        @keyframes drive {
+            from {
+                offset-distance: 0%;
+            }
+            to {
+                offset-distance: 100%;
+            }
+        }
+
+        .pickup-icon {
+            background-color: #28a745;
+            top: 180px;
+            left: 20px;
+        }
+
+        .dropoff-icon {
+            background-color: #dc3545;
+            top: 180px;
+            left: 330px;
+        }
+
+        .home-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .stat-card .value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .online-status {
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .online-status.offline {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .online-status.online {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        /* Ride Request Modal */
+        .ride-request-modal {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 25px;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+        
+        .ride-request-modal.show {
+            transform: translateY(0);
+        }
+        
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .timer-progress {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            animation: countdown 30s linear forwards;
+        }
+        
+        @keyframes countdown {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        
+        .fare-estimate {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .location-icon {
+            font-size: 18px;
+            color: #667eea;
+        }
+        
+        .location-text {
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .request-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        /* Earnings Screen */
+        .earnings-summary {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .earnings-amount {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .transaction-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e9ecef;
+        }
+        
+        .transaction-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .transaction-icon.credit { background-color: #28a745; }
+        .transaction-icon.debit { background-color: #dc3545; }
+        
+        .transaction-info .type { font-weight: 600; }
+        .transaction-info .date { font-size: 12px; color: #666; }
+        
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .transaction-amount.credit { color: #28a745; }
+        .transaction-amount.debit { color: #dc3545; }
+        
+        /* Profile & Sub-screens */
+        .profile-header {
+            background: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .profile-avatar-container {
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #667eea;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background-image: url('https://placehold.co/80x80/667eea/ffffff?text=RK');
+            background-size: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .change-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: #333;
+            color: white;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .profile-info .name { font-size: 20px; font-weight: 600; text-align: center; }
+        .profile-info .rating { font-size: 14px; color: #666; text-align: center; }
+        .profile-info .vehicle { font-size: 14px; color: #667eea; font-weight: 500; text-align: center; margin-top: 4px; }
+        
+        /* Partner/User Switch Styles */
+        .mode-switch-container {
+            background: #fff;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .mode-switch-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .mode-switch {
+            display: flex;
+            background: #f4f7fc;
+            border-radius: 25px;
+            padding: 4px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .mode-option {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+            color: #666;
+        }
+        
+        .mode-option.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .profile-menu-item {
+            background: #fff;
+            padding: 18px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #e9ecef;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .profile-menu-item:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        .menu-item-content { display: flex; align-items: center; gap: 15px; }
+        .menu-item-content i { font-size: 18px; color: #667eea; width: 25px; text-align: center; }
+        .menu-item-content span { font-weight: 500; }
+        .profile-menu-item .chevron { color: #ccc; }
+        
+        .detail-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f4f7fc;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        .detail-item .label {
+            color: #666;
+        }
+        .detail-item .value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .document-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            margin-bottom: 10px;
+        }
+        
+        .doc-status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .doc-status.verified { background: #e8f5e9; color: #2e7d32; }
+        .doc-status.pending { background: #fff3e0; color: #f57c00; }
+        .doc-status.expired { background: #ffebee; color: #c62828; }
+
+        /* Gemini & Settings Modals */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-center {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            width: 90%;
+            max-width: 320px;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-bottom {
+            background: #fff;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 25px;
+            width: 100%;
+            position: absolute;
+            bottom: 0;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal-center {
+            transform: scale(1);
+        }
+        
+        .modal-overlay.show .modal-bottom {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .modal-header i {
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .modal-content p {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .gemini-response {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #555;
+            min-height: 100px;
+            background: #f4f7fc;
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .gemini-attribution {
+            font-size: 10px;
+            color: #999;
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            display: block;
+            margin: 20px auto;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Performance Chart */
+        .chart-container {
+            margin-top: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+        }
+        .chart-toggle-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .chart-toggle-btns button {
+            background: #f4f7fc;
+            border: 1px solid #e9ecef;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #555;
+        }
+        .chart-toggle-btns button.active {
+            background: #667eea;
+            color: #fff;
+            border-color: #667eea;
+        }
+        
+        /* Payment QR Screen */
+        .qr-code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .qr-code-container img {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+        .payment-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <!-- Partner Home Screen (Offline) -->
+        <div class="screen active" id="home-offline">
+            <div class="status-bar">
+                <span id="time-home">9:41</span>
+                <span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="header">
+                <h1>Dashboard</h1>
+                <p>You are currently offline</p>
+            </div>
+            <div class="content">
+                <div class="map-view"></div>
+                <div class="home-stats">
+                    <div class="stat-card">
+                        <div class="value">₹1,250</div>
+                        <div class="label">Today's Earnings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">8</div>
+                        <div class="label">Completed Trips</div>
+                    </div>
+                     <div class="stat-card">
+                        <div class="value"><i class="fa-solid fa-star" style="color: #ffd700;"></i> 4.8</div>
+                        <div class="label">Your Rating</div>
+                    </div>
+                     <div class="stat-card">
+                        <div class="value">7h 15m</div>
+                        <div class="label">Online Duration</div>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="getHotspotAdvice()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Find Hotspots
+                </button>
+                <button class="btn btn-green" onclick="goOnline()">
+                    <i class="fa-solid fa-power-off"></i> Go Online
+                </button>
+            </div>
+            <div id="nav-home" class="navigation">
+                <button class="nav-btn active" onclick="navigateTo('home-offline')"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn" onclick="navigateTo('earnings')"><i class="fa-solid fa-wallet"></i> Earnings</button>
+                <button class="nav-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-user"></i> Profile</button>
+            </div>
+        </div>
+
+        <!-- Partner Home Screen (Online) -->
+        <div class="screen" id="home-online">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="header">
+                <h1>Searching for rides...</h1>
+                <p>You are online</p>
+            </div>
+            <div class="content">
+                <div class="map-view"></div>
+                 <div class="online-status online">
+                    <i class="fa-solid fa-wifi"></i> You are online and visible to users.
+                </div>
+                <button class="btn btn-red" onclick="goOffline()">
+                    <i class="fa-solid fa-power-off"></i> Go Offline
+                </button>
+            </div>
+            <div class="navigation">
+                <button class="nav-btn active" onclick="navigateTo('home-online')"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn" onclick="navigateTo('earnings')"><i class="fa-solid fa-wallet"></i> Earnings</button>
+                <button class="nav-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-user"></i> Profile</button>
+            </div>
+            <!-- Ride Request Modal will appear over this screen -->
+            <div class="ride-request-modal" id="ride-request">
+                <div class="timer-bar"><div class="timer-progress"></div></div>
+                <div class="fare-estimate">₹450</div>
+                <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Estimated Fare (15.2 km)</p>
+                
+                <div class="location-info">
+                    <i class="fa-solid fa-circle-dot location-icon"></i>
+                    <span class="location-text">Pickup: Hyderabad Central</span>
+                </div>
+                 <hr style="border: none; border-top: 1px dashed #ccc; margin: 10px 0;">
+                <div class="location-info">
+                    <i class="fa-solid fa-location-dot location-icon"></i>
+                    <span class="location-text">Drop: Gachibowli</span>
+                </div>
+                
+                <div class="request-actions">
+                    <button class="btn btn-red" style="flex:1;" onclick="hideRideRequest()">Decline</button>
+                    <button class="btn btn-green" style="flex:1;" onclick="acceptRide()">Accept</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Ongoing Trip Screen -->
+        <div class="screen" id="ongoing-trip">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="header sub-header">
+                <h1>En route to Gachibowli</h1>
+                <p>Trip in progress with John Doe</p>
+            </div>
+            <div class="content" style="padding: 0;">
+                <div class="map-view live-trip">
+                    <svg viewBox="0 0 380 280">
+                        <path class="route-path" d="M30,190 C50,120 160,120 210,190 S 310,260 350,190" />
+                    </svg>
+                    <div class="map-icon pickup-icon"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="map-icon dropoff-icon"><i class="fa-solid fa-flag-checkered"></i></div>
+                    <div class="map-icon car-icon"><i class="fa-solid fa-car"></i></div>
+                </div>
+                <div style="padding: 20px;">
+                    <button class="btn btn-secondary" style="margin-bottom: 15px;"><i class="fa-solid fa-location-arrow"></i> Open in Google Maps</button>
+                    <button class="btn" onclick="completeTrip()">
+                        <i class="fa-solid fa-flag-checkered"></i> Complete Trip
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Payment QR Screen -->
+        <div class="screen" id="payment-qr">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header">
+                <h1>Collect Payment</h1>
+                <p>Show this screen to the passenger</p>
+            </div>
+            <div class="content qr-code-container">
+                <p style="margin-bottom: 20px; color: #555;">Please scan the QR code to pay</p>
+                <img src="https://i.ibb.co/5R31vVf/sample-qr-code.png" alt="Payment QR Code">
+                <div class="payment-amount">₹450.00</div>
+                <p style="color: #666;">Total Fare</p>
+                <button class="btn btn-green" style="margin-top: 30px;" onclick="navigateTo('trip-summary')">
+                    <i class="fa-solid fa-check-circle"></i> Payment Received
+                </button>
+            </div>
+        </div>
+
+        <!-- Trip Summary Screen -->
+        <div class="screen" id="trip-summary">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="header">
+                <h1>Trip Completed!</h1>
+                <p>Here is your earning summary</p>
+            </div>
+            <div class="content" style="text-align: center;">
+                <h2 style="font-size: 18px; color: #555; margin-bottom: 10px;">You Earned</h2>
+                <div class="fare-estimate" style="color: #28a745; margin-bottom: 30px;">₹382.50</div>
+                
+                <div style="background: #fff; padding: 20px; border-radius: 12px; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;"><span>Total Fare:</span> <span>₹450.00</span></div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px;"><span>Aporo Fee (15%):</span> <span style="color: #dc3545;">- ₹67.50</span></div>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 15px 0;">
+                    <div style="display: flex; justify-content: space-between; font-weight: 600;"><span>Your Earning:</span> <span>₹382.50</span></div>
+                </div>
+                
+                <button class="btn" style="margin-top: 30px;" onclick="navigateTo('home-offline')">Done</button>
+            </div>
+        </div>
+
+        <!-- Earnings Screen -->
+        <div class="screen" id="earnings">
+            <div class="status-bar">
+                <span>9:41</span>
+                <span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span>
+            </div>
+            <div class="header sub-header">
+                <h1>Earnings</h1>
+            </div>
+            <div class="content">
+                <div class="earnings-summary">
+                    <div class="earnings-amount">₹8,420</div>
+                    <div>This Week's Earnings</div>
+                </div>
+                <button class="btn btn-secondary"><i class="fa-solid fa-building-columns"></i> Withdraw to Bank</button>
+                <h3 style="margin: 25px 0 15px; font-size: 16px; color: #333;">Recent Transactions</h3>
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <div class="transaction-icon credit"><i class="fa-solid fa-car-side"></i></div>
+                        <div class="transaction-info">
+                            <div class="type">Trip Earning</div>
+                            <div class="date">Today, 7:15 PM</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">+ ₹382.50</div>
+                </div>
+                <div class="transaction-item">
+                    <div class="transaction-details">
+                        <div class="transaction-icon credit"><i class="fa-solid fa-car-side"></i></div>
+                        <div class="transaction-info">
+                            <div class="type">Trip Earning</div>
+                            <div class="date">Today, 5:30 PM</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount credit">+ ₹255.00</div>
+                </div>
+                 <div class="transaction-item">
+                    <div class="transaction-details">
+                        <div class="transaction-icon debit"><i class="fa-solid fa-receipt"></i></div>
+                        <div class="transaction-info">
+                            <div class="type">Weekly Fee</div>
+                            <div class="date">Yesterday, 10:00 AM</div>
+                        </div>
+                    </div>
+                    <div class="transaction-amount debit">- ₹500.00</div>
+                </div>
+            </div>
+            <div id="nav-earnings" class="navigation">
+                <button class="nav-btn" onclick="navigateTo('home-offline')"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn active" onclick="navigateTo('earnings')"><i class="fa-solid fa-wallet"></i> Earnings</button>
+                <button class="nav-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-user"></i> Profile</button>
+            </div>
+        </div>
+        
+        <!-- Profile Screen -->
+        <div class="screen" id="profile">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="profile-header">
+                <div class="profile-avatar-container">
+                    <div class="profile-avatar"></div>
+                    <div class="change-photo-btn"><i class="fa-solid fa-camera"></i></div>
+                </div>
+                <div class="profile-info">
+                    <div class="name">Rajesh Kumar</div>
+                    <div class="rating"><i class="fa-solid fa-star" style="color: #ffd700;"></i> 4.8 Rating</div>
+                    <div class="vehicle">Hyundai Venue</div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="mode-switch-container">
+                    <span class="mode-switch-label">Switch Mode</span>
+                    <div class="mode-switch">
+                        <button class="mode-option active" onclick="switchMode('partner')">Partner</button>
+                        <button class="mode-option" onclick="switchMode('user')">User</button>
+                    </div>
+                </div>
+                <div class="profile-menu-item" onclick="navigateTo('documents')">
+                    <div class="menu-item-content"><i class="fa-solid fa-file-lines"></i> <span>My Documents</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                <div class="profile-menu-item" onclick="navigateTo('vehicle-details')">
+                    <div class="menu-item-content"><i class="fa-solid fa-car"></i> <span>Vehicle Details</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                <div class="profile-menu-item" onclick="navigateTo('performance')">
+                    <div class="menu-item-content"><i class="fa-solid fa-chart-line"></i> <span>Performance</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                 <div class="profile-menu-item" onclick="navigateTo('bank-details')">
+                    <div class="menu-item-content"><i class="fa-solid fa-building-columns"></i> <span>Bank Details</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                <div class="profile-menu-item" onclick="navigateTo('settings')">
+                    <div class="menu-item-content"><i class="fa-solid fa-gear"></i> <span>Settings</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 20px;"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+            </div>
+            <div id="nav-profile" class="navigation">
+                <button class="nav-btn" onclick="navigateTo('home-offline')"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn" onclick="navigateTo('earnings')"><i class="fa-solid fa-wallet"></i> Earnings</button>
+                <button class="nav-btn active" onclick="navigateTo('profile')"><i class="fa-solid fa-user"></i> Profile</button>
+            </div>
+        </div>
+        
+        <!-- Documents Screen -->
+        <div class="screen" id="documents">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>My Documents</h1>
+            </div>
+            <div class="content">
+                <div class="document-item">
+                    <div>
+                        <div style="font-weight: 600;">Driving License</div>
+                        <div style="font-size: 12px; color: #666;">Expires: 15/08/2028</div>
+                    </div>
+                    <div class="doc-status verified">Verified</div>
+                </div>
+                <div class="document-item">
+                    <div>
+                        <div style="font-weight: 600;">Vehicle RC</div>
+                        <div style="font-size: 12px; color: #666;">Expires: 20/03/2035</div>
+                    </div>
+                    <div class="doc-status verified">Verified</div>
+                </div>
+                <div class="document-item">
+                    <div>
+                        <div style="font-weight: 600;">Insurance</div>
+                        <div style="font-size: 12px; color: #666;">Expires: 10/09/2025</div>
+                    </div>
+                    <div class="doc-status pending">Pending</div>
+                </div>
+                 <div class="document-item">
+                    <div>
+                        <div style="font-weight: 600;">Pollution Certificate</div>
+                        <div style="font-size: 12px; color: #666;">Expired: 01/07/2025</div>
+                    </div>
+                    <div class="doc-status expired">Expired</div>
+                </div>
+                <button class="btn" style="margin-top: 20px;"><i class="fa-solid fa-plus"></i> Add/Update Document</button>
+            </div>
+        </div>
+
+        <!-- Vehicle Details Screen -->
+        <div class="screen" id="vehicle-details">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Vehicle Details</h1>
+            </div>
+            <div class="content">
+                <div class="detail-card">
+                    <div class="detail-item">
+                        <span class="label">Make</span>
+                        <span class="value">Hyundai</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Model</span>
+                        <span class="value">Venue</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Registration No.</span>
+                        <span class="value">TS 09 AB 1234</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Color</span>
+                        <span class="value">Phantom Black</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 20px;" onclick="navigateTo('vehicle-details-edit')"><i class="fa-solid fa-pen-to-square"></i> Edit Details</button>
+            </div>
+        </div>
+        
+        <!-- Vehicle Details Edit Screen -->
+        <div class="screen" id="vehicle-details-edit">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('vehicle-details')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Edit Vehicle Details</h1>
+            </div>
+            <div class="content">
+                <div class="input-group">
+                    <label>Make</label>
+                    <input type="text" value="Hyundai">
+                </div>
+                <div class="input-group">
+                    <label>Model</label>
+                    <input type="text" value="Venue">
+                </div>
+                <div class="input-group">
+                    <label>Registration No.</label>
+                    <input type="text" value="TS 09 AB 1234">
+                </div>
+                <div class="input-group">
+                    <label>Color</label>
+                    <input type="text" value="Phantom Black">
+                </div>
+                <button class="btn" onclick="navigateTo('vehicle-details')"><i class="fa-solid fa-save"></i> Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Bank Details Screen -->
+        <div class="screen" id="bank-details">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Bank Details</h1>
+            </div>
+            <div class="content">
+                <div class="detail-card">
+                    <div class="detail-item">
+                        <span class="label">Bank Name</span>
+                        <span class="value">State Bank of India</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">Account Number</span>
+                        <span class="value">**** **** 5678</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="label">IFSC Code</span>
+                        <span class="value">SBIN0001234</span>
+                    </div>
+                     <div class="detail-item">
+                        <span class="label">Account Holder</span>
+                        <span class="value">Rajesh Kumar</span>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 20px;" onclick="navigateTo('bank-details-edit')"><i class="fa-solid fa-retweet"></i> Change Account</button>
+            </div>
+        </div>
+        
+        <!-- Bank Details Edit Screen -->
+        <div class="screen" id="bank-details-edit">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('bank-details')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Change Bank Details</h1>
+            </div>
+            <div class="content">
+                 <div class="input-group">
+                    <label>Account Holder Name</label>
+                    <input type="text" value="Rajesh Kumar">
+                </div>
+                <div class="input-group">
+                    <label>Bank Name</label>
+                    <input type="text" value="State Bank of India">
+                </div>
+                <div class="input-group">
+                    <label>Account Number</label>
+                    <input type="text" value="1234567890125678">
+                </div>
+                <div class="input-group">
+                    <label>IFSC Code</label>
+                    <input type="text" value="SBIN0001234">
+                </div>
+                <button class="btn" onclick="navigateTo('bank-details')"><i class="fa-solid fa-save"></i> Save Changes</button>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div class="screen" id="settings">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Settings</h1>
+            </div>
+            <div class="content">
+                <div class="profile-menu-item" onclick="showSettingsModal('security')">
+                    <div class="menu-item-content"><i class="fa-solid fa-shield-halved"></i> <span>Security</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                 <div class="profile-menu-item" onclick="showSettingsModal('violations')">
+                    <div class="menu-item-content"><i class="fa-solid fa-triangle-exclamation"></i> <span>Violations</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+                 <div class="profile-menu-item" onclick="showSettingsModal('privacy')">
+                    <div class="menu-item-content"><i class="fa-solid fa-lock"></i> <span>Privacy Policy</span></div>
+                    <i class="fa-solid fa-chevron-right chevron"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Screen -->
+        <div class="screen" id="performance">
+            <div class="status-bar"><span>9:41</span><span><i class="fa-solid fa-signal"></i> <i class="fa-solid fa-wifi"></i> <i class="fa-solid fa-battery-full"></i></span></div>
+            <div class="header sub-header">
+                <button class="back-btn" onclick="navigateTo('profile')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Performance</h1>
+            </div>
+            <div class="content">
+                <div class="home-stats">
+                     <div class="stat-card">
+                        <div class="value"><i class="fa-solid fa-star" style="color: #ffd700;"></i> 4.8</div>
+                        <div class="label">Overall Rating</div>
+                    </div>
+                     <div class="stat-card">
+                        <div class="value">92%</div>
+                        <div class="label">Acceptance Rate</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <div class="chart-toggle-btns" id="chart-toggle">
+                        <button class="active" data-period="daily">Daily</button>
+                        <button data-period="weekly">Weekly</button>
+                        <button data-period="monthly">Monthly</button>
+                    </div>
+                    <canvas id="earningsChart"></canvas>
+                </div>
+                <button class="btn" style="margin-top: 20px;" onclick="getPerformanceTips()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> ✨ Get Performance Tips
+                </button>
+                <div id="performance-tips-container" class="gemini-response" style="margin-top: 20px; display: none;">
+                    <!-- Gemini response will be injected here -->
+                </div>
+                 <div class="gemini-attribution" style="display: none;" id="perf-attribution">Powered by Gemini</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gemini Modal -->
+    <div class="modal-overlay" id="gemini-modal-hotspot">
+        <div class="modal-center">
+            <div class="modal-header">
+                <i class="fa-solid fa-map-location-dot"></i>
+                <h3>Hotspot Advisor</h3>
+            </div>
+            <div class="gemini-response" id="hotspot-response">
+                <!-- Gemini response will be injected here -->
+            </div>
+            <div class="gemini-attribution">Powered by Gemini</div>
+            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="closeModal('gemini-modal-hotspot')">Close</button>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-bottom">
+            <div class="modal-header" id="settings-modal-header">
+                <!-- Header content is set by JS -->
+            </div>
+            <div class="modal-content" id="settings-modal-content">
+                <!-- Content is set by JS -->
+            </div>
+            <button class="btn btn-secondary" style="margin-top: 20px;" onclick="closeModal('settings-modal')">Close</button>
+        </div>
+    </div>
+
+
+    <script>
+        let currentScreen = 'home-offline';
+        let earningsChart;
+
+        // --- Gemini API Integration ---
+        const API_KEY = ""; // This will be handled by the environment
+
+        /**
+         * A generic function to call the Gemini API.
+         * @param {string} prompt The prompt to send to the model.
+         * @returns {Promise<string>} The text response from the model.
+         */
+        async function callGemini(prompt) {
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${API_KEY}`;
+            
+            const payload = {
+                contents: [{
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    console.error("API Error:", errorBody);
+                    return `Error: Could not get a response. Status: ${response.status}`;
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    console.error("Unexpected API response structure:", result);
+                    return "Sorry, I couldn't get a valid response. Please try again.";
+                }
+
+            } catch (error) {
+                console.error("Fetch Error:", error);
+                return "An error occurred while trying to connect to the AI service.";
+            }
+        }
+
+        /**
+         * Shows a loading spinner in the specified container.
+         * @param {HTMLElement} container The element to show the spinner in.
+         */
+        function showLoading(container) {
+            container.innerHTML = '<div class="loading-spinner"></div>';
+            container.style.display = 'block';
+        }
+
+
+        /**
+         * ✨ Gets hotspot advice from Gemini and displays it in a modal.
+         */
+        async function getHotspotAdvice() {
+            const modal = document.getElementById('gemini-modal-hotspot');
+            const responseContainer = document.getElementById('hotspot-response');
+            
+            modal.classList.add('show');
+            showLoading(responseContainer);
+
+            const now = new Date();
+            const day = now.toLocaleString('en-US', { weekday: 'long' });
+            const time = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            const prompt = `I am a ride-sharing driver in Hyderabad, India. It is currently ${day} at ${time}. Based on this time and day, suggest 2-3 specific areas or neighborhoods that are likely to be busy hotspots for ride requests. Provide a brief reason for each suggestion. Keep the response concise and friendly.`;
+
+            const advice = await callGemini(prompt);
+            responseContainer.innerText = advice;
+        }
+
+        /**
+         * ✨ Gets performance tips from Gemini and displays them.
+         */
+        async function getPerformanceTips() {
+            const container = document.getElementById('performance-tips-container');
+            const attribution = document.getElementById('perf-attribution');
+            showLoading(container);
+            
+            const stats = {
+                rating: "4.8 stars",
+                acceptanceRate: "92%",
+                cancellationRate: "5%",
+                tripsThisWeek: "42"
+            };
+
+            const prompt = `I am a ride-sharing driver. Here are my performance stats for the week:
+            - Overall Rating: ${stats.rating}
+            - Acceptance Rate: ${stats.acceptanceRate}
+            - Cancellation Rate: ${stats.cancellationRate}
+            - Trips Completed This Week: ${stats.tripsThisWeek}
+
+            Act as a friendly performance coach. Based on these stats, provide 2-3 actionable tips to help me improve my earnings or service. My cancellation rate seems a bit high. Keep the tone encouraging. Format the tips as a simple list.`;
+
+            const tips = await callGemini(prompt);
+            container.innerText = tips;
+            attribution.style.display = 'block';
+        }
+        
+        // --- Modal & Navigation Logic ---
+
+        /**
+         * Closes the specified modal.
+         * @param {string} modalId The ID of the modal overlay to close.
+         */
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+        
+        /**
+         * Shows the settings modal with dynamic content.
+         * @param {string} type - The type of settings to show ('security', 'violations', 'privacy').
+         */
+        function showSettingsModal(type) {
+            const modal = document.getElementById('settings-modal');
+            const header = document.getElementById('settings-modal-header');
+            const content = document.getElementById('settings-modal-content');
+            
+            const settingsData = {
+                security: {
+                    icon: 'fa-shield-halved',
+                    title: 'Security',
+                    text: 'Your account is protected with two-factor authentication. Always log out after using a shared device. Never share your password with anyone. Contact support immediately if you suspect any unusual activity.'
+                },
+                violations: {
+                    icon: 'fa-triangle-exclamation',
+                    title: 'Violations',
+                    text: 'You currently have 0 community guideline violations. Maintaining a good record ensures you continue to receive ride requests. Common violations include rash driving, frequent cancellations, and unprofessional behavior.'
+                },
+                privacy: {
+                    icon: 'fa-lock',
+                    title: 'Privacy Policy',
+                    text: 'We collect data such as your location and trip history to improve our services. We do not share your personal contact information with riders. All payment details are encrypted and stored securely. You can request to delete your data at any time.'
+                }
+            };
+            
+            const data = settingsData[type];
+            header.innerHTML = `<i class="fa-solid ${data.icon}"></i><h3>${data.title}</h3>`;
+            content.innerHTML = `<p>${data.text}</p>`;
+            
+            modal.classList.add('show');
+        }
+
+        // Function to switch between screens
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            const newScreen = document.getElementById(screenId);
+            if (newScreen) {
+                newScreen.classList.add('active');
+                currentScreen = screenId;
+                // If the new screen is the performance screen, initialize the chart
+                if (screenId === 'performance') {
+                    initializeChart();
+                }
+            }
+            updateTime();
+        }
+
+        // Function to handle bottom navigation
+        function navigateTo(screenId) {
+             // Deactivate all nav buttons across all nav bars
+            document.querySelectorAll('.navigation .nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Determine the root screen for nav highlighting
+            let rootScreenId = screenId.split('-')[0];
+            if (['documents', 'vehicle', 'performance', 'bank', 'settings'].includes(rootScreenId)) {
+                rootScreenId = 'profile';
+            }
+            
+            // Activate the correct button in the main nav bars
+            document.querySelectorAll(`#nav-home, #nav-earnings, #nav-profile`).forEach(nav => {
+                const targetBtn = nav.querySelector(`[onclick*="'${rootScreenId}'"]`);
+                if (targetBtn) {
+                     // Find the parent nav and check if it's part of the active screen
+                    const parentScreen = targetBtn.closest('.screen');
+                    if (parentScreen && parentScreen.id.startsWith(rootScreenId)) {
+                        targetBtn.classList.add('active');
+                    } else if (!parentScreen) { // For nav bars outside screens
+                         targetBtn.classList.add('active');
+                    }
+                }
+            });
+            
+            showScreen(screenId);
+        }
+
+        // --- Chart Logic ---
+        function initializeChart() {
+            const ctx = document.getElementById('earningsChart').getContext('2d');
+            const dailyData = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Daily Earnings (₹)',
+                    data: [1200, 1500, 1350, 1800, 2100, 2500, 1900],
+                    backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                    borderColor: 'rgba(102, 126, 234, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            };
+
+            if (earningsChart) {
+                earningsChart.destroy();
+            }
+            
+            earningsChart = new Chart(ctx, {
+                type: 'bar',
+                data: dailyData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return ` Earnings: ₹${context.raw}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Add event listeners to toggle buttons
+            document.getElementById('chart-toggle').addEventListener('click', (event) => {
+                if (event.target.tagName === 'BUTTON') {
+                    const period = event.target.dataset.period;
+                    updateChartData(period);
+                    
+                    // Update active button
+                    document.querySelectorAll('#chart-toggle button').forEach(btn => btn.classList.remove('active'));
+                    event.target.classList.add('active');
+                }
+            });
+        }
+
+        function updateChartData(period) {
+            const dataMap = {
+                daily: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    data: [1200, 1500, 1350, 1800, 2100, 2500, 1900]
+                },
+                weekly: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    data: [8420, 9100, 7800, 9500]
+                },
+                monthly: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    data: [35000, 32000, 38000, 36500, 41000, 39000]
+                }
+            };
+            
+            earningsChart.data.labels = dataMap[period].labels;
+            earningsChart.data.datasets[0].data = dataMap[period].data;
+            earningsChart.data.datasets[0].label = `${period.charAt(0).toUpperCase() + period.slice(1)} Earnings (₹)`;
+            earningsChart.update();
+        }
+
+        // --- Original App Actions ---
+        function goOnline() {
+            showScreen('home-online');
+            setTimeout(() => {
+                if(currentScreen === 'home-online') {
+                    document.getElementById('ride-request').classList.add('show');
+                }
+            }, 5000);
+        }
+
+        function goOffline() {
+            showScreen('home-offline');
+        }
+        
+        function hideRideRequest() {
+            document.getElementById('ride-request').classList.remove('show');
+        }
+        
+        function acceptRide() {
+            hideRideRequest();
+            showScreen('ongoing-trip');
+        }
+        
+        function completeTrip() {
+            showScreen('payment-qr');
+        }
+
+        function updateTime() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            document.querySelectorAll('[id^="time"]').forEach(el => {
+                if (el) el.textContent = `${hours}:${minutes}`;
+            });
+        }
+
+        // Function to switch between partner and user modes
+        function switchMode(mode) {
+            // Update the visual state of the switch buttons
+            const partnerBtn = document.querySelector('.mode-option[onclick*="partner"]');
+            const userBtn = document.querySelector('.mode-option[onclick*="user"]');
+            
+            if (mode === 'partner') {
+                partnerBtn.classList.add('active');
+                userBtn.classList.remove('active');
+                // Stay in partner mode (current interface)
+                showScreen('home-offline');
+            } else if (mode === 'user') {
+                userBtn.classList.add('active');
+                partnerBtn.classList.remove('active');
+                // Switch to user interface (APORO.html)
+                window.location.href = 'APORO.html';
+            }
+        }
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            navigateTo('home-offline');
+            setInterval(updateTime, 30000);
+        });
+
+    </script>
+</body>
+</html>
